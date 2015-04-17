@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>DeckSim</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        
+        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+        <link rel="stylesheet" href="css/normalize.css">
+        <link rel="stylesheet" href="css/main.css">
+        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <script src="js/vendor/modernizr-2.6.2.min.js"></script>
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+        
+        <!-- Add your site or application content here -->
+        <div class="container-fluid">
+            <div id="decks">
+                <div class= "panel panel-default" id="o1area">
+                    <div class="panel-body">
+                        <button type="button" class="btn btn-default">Remove Card</button>
+                        <span id = "OutpostDeck1">Outpost #1</span>
+                    </div>
+                </div>
+                
+                <div class= "panel panel-default" id="o2area">
+                    <div class="panel-body">
+                        <button type="button" class="btn btn-default">Remove Card</button>
+                        <span id = "OutpostDeck2">Outpost #2</span>
+                    </div>
+                </div>
+                
+                <div class= "panel panel-default" id="o3area">
+                    <div class="panel-body">
+                        <button type="button" class="btn btn-default">Remove Card</button>
+                        <span id = "OutpostDeck3"> Outpost #3 </span>
+                    </div>
+                </div>
+                
+                <div class= "panel panel-default" id="t1area">
+                    <div class="panel-body">
+                        <button type="button" class="btn btn-default">Remove Card</button>
+                        <span id = "ThingDeck1">Thing #1</span>
+                    </div>
+                </div>
+                
+                <div class= "panel panel-default" id="t2area">
+                    <div class="panel-body">
+                        <button type="button" class="btn btn-default">Remove Card</button>
+                        <span id = "ThingDeck2">Thing #2</span>
+                    </div>
+                </div>
+                
+                <div class= "panel panel-default" id="t3area">
+                    <div class="panel-body">
+                        <button type="button" class="btn btn-default">Remove Card</button>
+                        <span id = "ThingDeck3">Thing #3</span>
+                    </div>
+                </div>
+                <hr>
+            </div>
+            
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Player 1 Hand</h3>
+                </div>
+                <div class="panel-body" id="p1hand"></div>
+            </div>
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Player 2 Hand</h3>
+                </div>
+                <div class="panel-body" id="p2hand"></div>
+            </div>
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title">The Thing Hand</h3>
+                </div>
+                <div class="panel-body" id="thingHand"></div>
+            </div>
+            
+            <button type="button" 
+                    class="btn btn-primary" 
+                    onclick="dealStartingHands()">
+                Deal Starting Hands
+            </button>
+            
+            <button type="button" class="btn btn-default">This Should Fail</button>
+        </div>
+        
+        <script src="js/main.js"></script>
+        <script src="esprima.js"></script>
+        <script src="js-yaml.min.js"></script>
+        
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
+        <script src="js/plugins.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+        <script src="js/main.js"></script>
+        
+        <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+        <script>
+            var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
+            (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+            g.src='//www.google-analytics.com/ga.js';
+            s.parentNode.insertBefore(g,s)}(document,'script'));
+        </script>
+    </body>
+</html>
