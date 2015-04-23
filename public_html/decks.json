@@ -183,5 +183,37 @@
             {"name": "CANCEL 2 SUCCESSES", "desc": ""},
             {"name": "CANCEL 3 SUCCESSES", "desc": ""}
         ]
-    }
+    },
+    "CrewCards": [
+        {"name": "MACREADY" , "desc": "TOUGH + HELICOPTER PILOT <span class=\"badge\">+1D6</span>"},
+        {"name": "GARRY" , "desc": "STATION MANAGER <span class=\"badge\">+2D6</span>"},
+        {"name": "NAULS" , "desc": "LUCKY <span class=\"badge\">+1D6</span>"},
+        {"name": "PALMER" , "desc": "HELICOPTER PILOT <span class=\"badge\">+1D6</span>"},
+        {"name": "CHILDS" , "desc": "TOUGH + MECHANIC <span class=\"badge\">+1D6</span>"},
+        {"name": "COPPER" , "desc": "MEDICAL <span class=\"badge\">+1D6</span>"},
+        {"name": "NORRIS" , "desc": "GEOLOGY + LANGUAGES <span class=\"badge\">+1D6</span><br /><br /><i>DURING THE THING ATTACKS! ENCOUNTER, IF NORRIS IS REVEALED AS A THING: PCS NEED TO DISCARD 4 CARDS EACH TO DEFEAT</i>"},
+        {"name": "CLARK" , "desc": "TOUGH + DOG HANDLER <span class=\"badge\">+1D6</span>"},
+        {"name": "BENNINGS" , "desc": "METEOROLOGY <span class=\"badge\">+1D6</span><br /><br /><i>DURING A THING ATTACKS! ENCOUNTER, IF BENNINGS IS REVEALED AS A THING: THE THING PLAYER MAY DRAW 1 CARD</i>"},
+        {"name": "FUCHS" , "desc": "BIOLOGY <span class=\"badge\">+1D6</span>"},
+        {"name": "WINDOWS" , "desc": "RADIO OPS <span class=\"badge\">+1D6</span>"},
+        {"name": "BLAIR" , "desc": "BIOLOGY <span class=\"badge\">+1D6</span><br /><br /><i>DURING THE FINAL CONFRONTATION ENCOUNTER, IF BLAIR IS REVEALED AS A THING: HE REQUIRES AN ADDITIONAL 2 SUCCESSES TO DEFEAT</i>"}
+    ],
+    "TaskCards": [
+        {"name": "BULLDOZER", "desc": "<b>MAX CREW:</b> 3<br /><b>TARGET:</b> 6+<br /><b>KEY SKILL:</b> MECHANIC<br /><b>SUCCESSES REQ:</b> 2<br /><b>SUCCESS:</b> TRIGGER (ONCE ONLY) TO CANCEL A \"THING ATTACKS!\" ENCOUNTER, OR TO DESTROY ONE REVEALED THING DURING THE FINAL CONFRONTATION"},
+        {"name": "RADIO", "desc": "<b>MAX CREW:</b> 2<br /><b>TARGET:</b> 6+<br /><b>KEY SKILL:</b> RADIO OPS<br /><b>SUCCESSES REQ:</b> 5<br /><b>SUCCESS:</b> TRIGGER TO PROGRESS IMMEDIATELY TO THE \"SEE WHAT HAPPENS\" ENCOUNTER"},
+        {"name": "HELICOPTER", "desc": "<b>MAX CREW:</b> 3<br /><b>TARGET:</b> 6+<br /><b>KEY SKILLS:</b> MECHANIC, PILOT<br /><b>SUCCESSES REQ:</b> 6<br /><b>SUCCESS:</b> TRIGGER TO PROCEED IMMEDIATELY TO THE \"SEE WHAT HAPPENS\" ENCOUNTER"},
+        {"name": "RESEARCH", "desc": "<b>MAX CREW:</b> 4<br /><b>TARGET:</b> 6+<br /><b>KEY SKILL:</b> BIOLOGY, LANGUAGES, MEDICAL<br /><b>SUCCESSES REQ:</b> 3<br /><b>SUCCESS:</b> TRIGGER TO REDUCE THE NUMBER OF SUCCESSES NEEDED BY 1 ON ALL FUTURE ENCOUNTERS"}
+    ], 
+    "Destruction": [
+        {"name": "BULLDOZER", "desc" : ""},
+        {"name": "HELICOPTER", "desc" : ""},
+        {"name": "RESEARCH", "desc" : ""},
+        {"name": "RADIO", "desc" : ""},
+        {"name": "HELICOPTER", "desc" : ""},
+        {"name": "RESEARCH", "desc" : ""},
+        {"name": "RADIO", "desc" : ""},
+        {"name": "BULLDOZER", "desc" : ""}
+    ],
+    "BlairSaucer": [{"name": "BLAIR-SAUCER", "desc": "AT THE END OF EACH TURN, ROLL DICE EQUAL TO THE NUMBER OF CARDS UNDER THIS CARD<br /><b>TARGET:</b><span class=\"badge\">5+</span><br /><b>SUCCESSES REQ:</b><span class=\"badge\">3</span>"}],
+    "ThousandMilesToCoast": [{"name": "THOUSAND MILES TO THE COAST", "desc": "DURING EACH BLAIR-SAUCER PHASE, THE THING MAY DISCARD 1 CARD ONLY FROM HIS HAND IN ORDER TO ROLL <span class=\"badge\">1D6</span>. IF THE THING ROLLS <span class=\"badge\">4+</span>, PUT 1 TOKEN ON THIS CARD<br /><br />10 TOKENS = THING VICTORY"}]
 }

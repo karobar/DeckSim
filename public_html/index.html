@@ -22,79 +22,129 @@
             <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
         <![endif]-->
         
-        <!-- Add your site or application content here -->
+        <!-- Add your site or application content here -->        
         <div class="container-fluid">
-            <div id="decks">
-                <div class= "panel panel-default" id="o1area">
-                    <div class="panel-body">
-                        <button type="button" class="btn btn-default">Remove Card</button>
-                        <span id = "OutpostDeck1">Outpost #1</span>
+            <div id="decks"></div>
+            
+            <div class="panel panel-primary">
+                <div class="panel-heading text-center">
+                    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#chooseCharModal" data-hand="p1area">Choose Character</button>
+                    <strong class="panel-title">Player 1 Area</strong>
+                </div>
+                <div class="panel-body" id="p1area">
+                    <div class="panel panel-default">
+                        <div class="panel-heading text text-center">
+                            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#drawModal">Draw Card</button>
+                            <strong class="panel-title">Player 1 Hand</strong>
+                        </div>
+                        <div class="panel-body" id="p1hand"></div>
                     </div>
                 </div>
-                
-                <div class= "panel panel-default" id="o2area">
-                    <div class="panel-body">
-                        <button type="button" class="btn btn-default">Remove Card</button>
-                        <span id = "OutpostDeck2">Outpost #2</span>
-                    </div>
-                </div>
-                
-                <div class= "panel panel-default" id="o3area">
-                    <div class="panel-body">
-                        <button type="button" class="btn btn-default">Remove Card</button>
-                        <span id = "OutpostDeck3"> Outpost #3 </span>
-                    </div>
-                </div>
-                
-                <div class= "panel panel-default" id="t1area">
-                    <div class="panel-body">
-                        <button type="button" class="btn btn-default">Remove Card</button>
-                        <span id = "ThingDeck1">Thing #1</span>
-                    </div>
-                </div>
-                
-                <div class= "panel panel-default" id="t2area">
-                    <div class="panel-body">
-                        <button type="button" class="btn btn-default">Remove Card</button>
-                        <span id = "ThingDeck2">Thing #2</span>
-                    </div>
-                </div>
-                
-                <div class= "panel panel-default" id="t3area">
-                    <div class="panel-body">
-                        <button type="button" class="btn btn-default">Remove Card</button>
-                        <span id = "ThingDeck3">Thing #3</span>
-                    </div>
-                </div>
-                <hr>
             </div>
             
             <div class="panel panel-primary">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Player 1 Hand</h3>
+                <div class="panel-heading text-center">
+                    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#chooseCharModal" data-hand="p2area">Choose Character</button>
+                    <strong class="panel-title">Player 2 Area</strong>
                 </div>
-                <div class="panel-body" id="p1hand"></div>
-            </div>
-            <div class="panel panel-primary">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Player 2 Hand</h3>
+                <div class="panel-body" id="p2area">
+                    <div class="panel panel-default">
+                        <div class="panel-heading text-center">
+                            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#drawModal">Draw Card</button>
+                            <strong class="panel-title">Player 2 Hand</strong>
+                        </div>
+                        <div class="panel-body" id="p2hand"></div>
+                    </div>
                 </div>
-                <div class="panel-body" id="p2hand"></div>
-            </div>
-            <div class="panel panel-primary">
-                <div class="panel-heading">
-                    <h3 class="panel-title">The Thing Hand</h3>
-                </div>
-                <div class="panel-body" id="thingHand"></div>
             </div>
             
-            <button type="button" 
-                    class="btn btn-primary" 
-                    onclick="dealStartingHands()">
+            <div class="panel panel-primary">
+                <div class="panel-heading text-center">
+                    <strong class="panel-title">The Thing Area</strong>
+                </div>
+                
+                <div class="panel-body" id="thingArea">
+                    <div class="panel panel-default">
+                        <div class="panel-heading text-center">
+                            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#drawModal">Draw Card</button>
+                            <strong class="panel-title">The Thing Hand</strong>
+                            
+                        </div>
+                        
+                        <div class="panel-body" id="thingHand"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <button type="button" class="btn btn-primary" id="dealStartingHandsButton">
                 Deal Starting Hands
-            </button>
+            </button><p>
+                
+            <div class="panel panel-default">
+                <div class="panel-heading text-center">
+                    <h3 class="panel-title">The Rec Room</h3>
+                </div>
+
+                <div class="panel-body" id="recRoom">
+                </div>
+            </div>
+                
+            <div class="panel panel-default">
+                <div class="panel-heading text-center">
+                    <h3 class="panel-title">Tasks</h3>
+                </div>
+                <div class="panel-body" id="tasks">
+                </div>
+            </div>
+                
+            <div class="panel panel-default">
+                <div class="panel-heading text-center">
+                    <h3 class="panel-title">Tool Shed</h3>
+                </div>
+                <div class="panel-body" id="toolshed">
+                </div>
+            </div>
             
-            <button type="button" class="btn btn-default">This Should Fail</button>
+            <div class="modal fade" id="drawModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        
+                        <form role="form" id="deckButtons" style="padding:19px 19px"></form>
+                        
+                        <div class="modal-body">
+                            <label for="recipient-name" class="control-label">Remove Specific Card:</label>
+                            <input type="text" class="form-control" id="cardIDinput">
+                        </div>
+                        
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                          <button type="button" class="btn btn-primary" data-dismiss="modal" id="removeCardAcceptButton">Remove Card</button>
+                        </div>
+
+                      </div>
+                </div>
+            </div>
+            
+            <div class="modal fade" id="chooseCharModal" tabindex="-1" role="dialog" aria-labelledby="chooseCharLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        
+                        <div class="modal-header">
+                            <h6>Choose Character</h6> 
+                            (Make sure at least one player has PILOT)
+                        </div>
+                        
+                        <div class="modal-body">
+                            <label for="recipient-name" class="control-label" id="chooseCharacterBody"></label>
+                        </div>
+                        
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
         </div>
         
         <script src="js/main.js"></script>
