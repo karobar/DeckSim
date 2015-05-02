@@ -44,7 +44,7 @@ $(document).ready(function() {
             if(i === 0) {
                 $("#deckRadios").append("<label class='btn btn-default active'><input type='radio' name='options' data-cheating='"+allDecks[i].name+"' checked>"+ allDecks[i].name + "</label>");
             }
-            else {    
+            else {
                 $("#deckRadios").append("<label class='btn btn-default'><input type='radio' name='options' data-cheating='"+allDecks[i].name+"'>"+ allDecks[i].name + "</label>");
             }
         }
@@ -66,18 +66,51 @@ $(document).ready(function() {
     
     $('#chooseCharModal').on('show.bs.modal', function (e) {
         for(var i=0; i < crewCards.length(); i++) {
-            $("#chooseCharacterBody").append("<button style='margin:7px 15px 17px 0;' type='button' class='btn btn-success' data-toggle='popover' data-trigger='hover' data-placement='top' data-content='"+crewCards.get(i).desc+"'>"+crewCards.get(i).name+"</button>");
+            $("#chooseCharacterBody").append("<button \n\
+                                               style='margin:7px 15px 17px 0;' \n\
+                                               type='button' \n\
+                                               class='btn btn-success' \n\
+                                               data-toggle='popover' \n\
+                                               data-trigger='hover' \n\
+                                               data-placement='top' \n\
+                                               data-content='"+crewCards.get(i).desc+"'>"+
+                                               crewCards.get(i).name+"</button>");
         }
+        $('[data-toggle="popover"]').popover({html:true});
         var theModal = $(this);
         var invokingButton = $(e.relatedTarget);
         var handTarget = '#' + invokingButton.attr('data-hand');
-        $('#chooseCharacterBody .btn').click(function () {
+        $('#chooseCharacterBody .btn').unbind('click').bind('click', function () {
             theModal.modal('hide');
             var removedCard = crewCards.removeCard($(this).html());
-            $(handTarget).append("<button style='margin:7px 15px 17px 0;' type='button' class='btn btn-success' data-toggle='popover' data-trigger='hover' data-placement='top' data-content='"+removedCard.desc+"'>"+removedCard.name+"</button>");
+            $(handTarget).append("<button \n\
+                                   id='crew"+removedCard.name+"' \n\
+                                   style='margin:7px 15px 17px 0;' \n\
+                                   type='button' \n\
+                                   class='btn btn-success'\n\
+                                   data-toggle='popover' \n\
+                                   data-trigger='hover' \n\
+                                   data-placement='top' \n\
+                                   data-content='"+removedCard.desc+"'>"+
+                                   removedCard.name+"</button>");
             $('[data-toggle="popover"]').popover({html:true});
             updateRecRoom();
             invokingButton.prop('disabled', true);
+        });
+    });
+    
+    $('#placeUnderModal').on('show.bs.modal', function (e) {
+        var theModal = $(this);
+        var invokingButton = $(e.relatedTarget);
+        $('#chooseCardBody .btn').unbind('click').bind('click', function () {
+            theModal.modal('hide');
+            var pickedCardHTMLelement = $('#crew' + $(this).html());
+            pickedCardHTMLelement.removeClass('btn-success').addClass('btn-warning');
+            var crewCardObj  = getCrewCardFromName($(this).html());
+            crewCardObj.misc = crewCardObj.misc + "<br /><small>===" + invokingButton.attr('data-linkedCardName') + "===</small>";
+            var oldContent = pickedCardHTMLelement.attr('data-content');
+            pickedCardHTMLelement.attr('data-content', oldContent + crewCardObj.misc);
+            invokingButton.parent().remove();
         });
     });
     
@@ -91,14 +124,16 @@ $(document).ready(function() {
     });
     
     loadFileAsJSONmodel("/DeckSim/decks.json");
-    
-    player1Hand = new Hand("Player 1 Hand");
-    player2Hand = new Hand("Player 2 Hand");
 });
 
-
-
-
+function getCrewCardFromName( crewMemberName ) {
+    for(var i=0; i < crewCards.length(); i++) {
+        if(crewCards.get(i).name === crewMemberName) {
+            console.log("crew card found:" + crewCards.get(i).name);
+            return crewCards.get(i);
+        }
+    }
+}
 
 function getDeckFromName( name ) {
     for(var i=0; i < allDecks.length; i++) {
@@ -119,47 +154,60 @@ function getHandFromHTMLid( searchHTMLid ) {
 function loadFileAsJSONmodel(URL) {
     $.getJSON(URL) 
         .done(function( json ) {
-            o1 = new StandardDeck("Outpost 31-Deck #1", "OutpostDeck1", json.OutpostDeck1.BaseCards);
+            o1 = new StandardDeckModel("Outpost 31-Deck #1", "OutpostDeck1", json.OutpostDeck1.BaseCards);
             o1.standardInit();
-            o2 = new StandardDeck("Outpost 31-Deck #2", "OutpostDeck2", json.OutpostDeck2.BaseCards);
+            o2 = new StandardDeckModel("Outpost 31-Deck #2", "OutpostDeck2", json.OutpostDeck2.BaseCards);
             o2.standardInit();
-            o3 = new StandardDeck("Outpost 31-Deck #3", "OutpostDeck3", json.OutpostDeck3.BaseCards);
+            o3 = new StandardDeckModel("Outpost 31-Deck #3", "OutpostDeck3", json.OutpostDeck3.BaseCards);
             o3.standardInit();
-            t1 = new StandardDeck("The Thing-Deck #1", "ThingDeck1", json.ThingDeck1.BaseCards);
+            t1 = new StandardDeckModel("The Thing-Deck #1", "ThingDeck1", json.ThingDeck1.BaseCards);
             t1.standardInit();
-            t2 = new StandardDeck("The Thing-Deck #2", "ThingDeck2", json.ThingDeck2.BaseCards);
+            t2 = new StandardDeckModel("The Thing-Deck #2", "ThingDeck2", json.ThingDeck2.BaseCards);
             t2.standardInit();
-            t3 = new StandardDeck("The Thing-Deck #3", "ThingDeck3", json.ThingDeck3.BaseCards);
+            t3 = new StandardDeckModel("The Thing-Deck #3", "ThingDeck3", json.ThingDeck3.BaseCards);
             t3.standardInit();
-            destruction = new StandardDeck("Destruction Deck", "destruction", json.Destruction.BaseCards);
+            destruction = new StandardDeckModel("Destruction Deck", "destruction", json.Destruction.BaseCards);
             destruction.standardInit();
             
             allDecks = [o1,o2,o3,t1,t2,t3, destruction];
             
-            player1Hand = new Hand("Player 1 Hand", "player1Hand" );
+            player1Hand = new HandModel("Player 1 Hand", "player1Hand" );
             console.log("player1Hand: " + player1Hand.HTMLid);
-            player2Hand = new Hand("Player 2 Hand", "player2Hand" );
+            player2Hand = new HandModel("Player 2 Hand", "player2Hand" );
             console.log("player2Hand: " + player2Hand.HTMLid);
-            thingHand = new Hand("The Thing Hand", "thingHand" );
+            thingHand = new HandModel("The Thing Hand", "thingHand" );
             console.log("thingHand: " + thingHand.HTMLid);
             
             allHands = [player1Hand, player2Hand, thingHand];
             
-            crewCards = new Deck("Crew Cards", "crew-cards", json.CrewCards);
+            crewCards = new DeckModel("Crew Cards", "crew-cards", json.CrewCards);
             crewCards.init();
             updateRecRoom();
             
-            tasks = new Deck("Tasks", "tasks", json.TaskCards.BaseCards);
+            console.log("crewCards.length: " + crewCards.length());
+            for(var i=0; i < crewCards.length(); i++) {
+                $("#chooseCardBody").append("<button \n\
+                                              style='margin:7px 15px 17px 0;' \n\
+                                              type='button'\n\
+                                              class='btn btn-success' \n\
+                                              data-toggle='popover' \n\
+                                              data-trigger='hover' \n\
+                                              data-placement='top' \n\
+                                              data-content='"+crewCards.get(i).desc+"'>"+
+                                              crewCards.get(i).name+"</button>");
+            }
+            
+            tasks = new DeckModel("Tasks", "tasks", json.TaskCards.BaseCards);
             tasks.init();
             for(var i=0; i < tasks.length(); i++) {
                 $("#tasks").append("<button style='margin:7px 15px 17px 0;' type='button' class='btn btn-info' data-toggle='popover' data-trigger='hover' data-placement='top' data-content='"+tasks.get(i).desc+"'>"+tasks.get(i).name+"</button>");
             }
             
-            blairSaucer = new Deck("Blair Saucer", "blairSaucer", json.BlairSaucer);
+            blairSaucer = new DeckModel("Blair Saucer", "blairSaucer", json.BlairSaucer);
             blairSaucer.init();
             $("#thingArea").append("<button style='margin:7px 15px 17px 0;' type='button' class='btn btn-danger' data-toggle='popover' data-trigger='hover' data-placement='top' data-content='"+blairSaucer.get(0).desc+"'>"+blairSaucer.get(0).name+"</button>");
             
-            thousandMilesToCoast = new Deck("Thousand Miles To Coast", "thousandMilesToCoast", json.ThousandMilesToCoast);
+            thousandMilesToCoast = new DeckModel("Thousand Miles To Coast", "thousandMilesToCoast", json.ThousandMilesToCoast);
             thousandMilesToCoast.init();
             $("#thingArea").append("<button style='margin:7px 15px 17px 0;' type='button' class='btn btn-danger' data-toggle='popover' data-trigger='hover' data-placement='top' data-content='"+thousandMilesToCoast.get(0).desc+"'>"+thousandMilesToCoast.get(0).name+"</button>");
             
@@ -181,7 +229,8 @@ function updateRecRoom() {
     $("#recRoom").empty();
     for(var i=0; i < crewCards.length(); i++) {
         $("#recRoom").append(" \
-            <button style='margin:7px 15px 17px 0;' \
+            <button style='margin:7px 15px 17px 0;' \\n\
+                    id='crew"+ crewCards.get(i).name+"' \
                     type='button' \
                     class='btn btn-success' \
                     data-toggle='popover' \
@@ -194,7 +243,7 @@ function updateRecRoom() {
     $('[data-toggle="popover"]').popover({html:true});
 }
 
-function Deck( inName, HTMLelementID, cardList ) {
+function DeckModel( inName, HTMLelementID, cardList ) {
     this.name = inName;
     this.HTMLid = HTMLelementID;
     this.stack;
@@ -204,7 +253,7 @@ function Deck( inName, HTMLelementID, cardList ) {
         
         for(var i = 0; i < data.length; i++) {
             var currListing = data[i];
-            outputStack.push(new Card(i+1, currListing.name, currListing.desc));
+            outputStack.push(new CardModel(i+1, currListing.name, currListing.desc));
         }
         
         //console.log("OPS: " + outputStack);
@@ -281,9 +330,9 @@ function Deck( inName, HTMLelementID, cardList ) {
     };
 }
 
-StandardDeck.prototype = new Deck();
-function StandardDeck(inName, HTMLelementID, cardList){
-    Deck.apply(this, arguments);
+StandardDeckModel.prototype = new DeckModel();
+function StandardDeckModel(inName, HTMLelementID, cardList){
+    DeckModel.apply(this, arguments);
     
     this.updateDisplay = function() {
         document.getElementById(this.HTMLid).innerHTML = this.toString();
@@ -309,7 +358,7 @@ function StandardDeck(inName, HTMLelementID, cardList){
     };
 }
 
-function Hand( PlayerName, HTMLelementID ) {
+function HandModel( PlayerName, HTMLelementID ) {
     var contents = new Array();
     var pName = PlayerName;
     this.HTMLid = HTMLelementID;
@@ -322,10 +371,7 @@ function Hand( PlayerName, HTMLelementID ) {
     };
     
     this.appendCardText = function( card ) {
-        $('#' + this.HTMLid).append("<span>");
-        $('#' + this.HTMLid).append( card.getPlaceUnderButtonHTML() );
-        $('#' + this.HTMLid).append( card.toString() );
-        $('#' + this.HTMLid).append("</span>");
+        $('#' + this.HTMLid).append("<span>"+card.getPlaceUnderButtonHTML() + card.toString() + "</span>");
     };
     
     this.drawSpecificCard = function( deck , cardNum ) {
@@ -365,10 +411,11 @@ function Hand( PlayerName, HTMLelementID ) {
     };
 }
 
-function Card(inID, inName, inDesc ) {
+function CardModel(inID, inName, inDesc ) {
     this.id = inID;
     this.name = inName;
     this.desc = inDesc;
+    this.misc = '';
     
     //divID should refer to the id of the div which contains the card text
     this.getPlaceUnderButtonHTML = function( ) {
@@ -377,10 +424,13 @@ function Card(inID, inName, inDesc ) {
                  type='button' \n\
                  class='btn btn-default' \n\
                  data-toggle='modal' \n\
-                 data-target='#placeUnderModal'>Place Under Card</button>";
+                 data-target='#placeUnderModal'\n\
+                 data-linkedCardName='"+this.name+"'>Place Under Card</button>";
     };
     
     this.toString = function() {
         return "<strong>" + this.name + "</strong><i><small>"+this.desc+ "(" + this.id + ")</small></i><p>";
     };
 }
+
+
