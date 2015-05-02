@@ -14,7 +14,7 @@
         <link rel="stylesheet" href="css/normalize.css">
         <link rel="stylesheet" href="css/main.css">
         <link rel="stylesheet" href="css/bootstrap.min.css">
-        <link rel="stylesheet" href="css/bootstrap-resonsive.min.css">
+        <link rel="stylesheet" href="css/bootstrap-theme.min.css">
         <script src="js/vendor/modernizr-2.6.2.min.js"></script>
     </head>
     <body>
@@ -26,132 +26,155 @@
         <div class="container-fluid">
             <div id="decks"></div>
             
-            <div class="panel panel-primary">
-                <div class="panel-heading text-center">
-                    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#chooseCharModal" data-hand="p1area">Choose Character</button>
-                    <strong class="panel-title">Player 1 Area</strong>
-                </div>
-                <div class="panel-body" id="p1area">
-                    <div class="panel panel-default">
-                        <div class="panel-heading text text-center">
-                            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#drawModal">Draw Card</button>
-                            <strong class="panel-title">Player 1 Hand</strong>
-                        </div>
-                        <div class="panel-body" id="p1hand"></div>
+            <div id="hands">
+                <div class="panel panel-primary">
+                    <div class="panel-heading text-center">
+                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#chooseCharModal" data-hand="p1area">Choose Character</button>
+                        <strong class="panel-title">Player 1 Area</strong>
                     </div>
-                </div>
-            </div>
-            
-            <div class="panel panel-primary">
-                <div class="panel-heading text-center">
-                    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#chooseCharModal" data-hand="p2area">Choose Character</button>
-                    <strong class="panel-title">Player 2 Area</strong>
-                </div>
-                <div class="panel-body" id="p2area">
-                    <div class="panel panel-default">
-                        <div class="panel-heading text-center">
-                            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#drawModal">Draw Card</button>
-                            <strong class="panel-title">Player 2 Hand</strong>
+                    <div class="panel-body" id="p1area">
+                        <div class="panel panel-default">
+                            <div class="panel-heading text text-center">
+                                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#drawModal" data-hand="player1Hand">Draw Card</button>
+                                <strong class="panel-title">Player 1 Hand</strong>
+                            </div>
+                            <div class="panel-body" id="player1Hand"></div>
                         </div>
-                        <div class="panel-body" id="p2hand"></div>
                     </div>
-                </div>
-            </div>
-            
-            <div class="panel panel-primary">
-                <div class="panel-heading text-center">
-                    <strong class="panel-title">The Thing Area</strong>
                 </div>
                 
-                <div class="panel-body" id="thingArea">
-                    <div class="panel panel-default">
-                        <div class="panel-heading text-center">
-                            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#drawModal">Draw Card</button>
-                            <strong class="panel-title">The Thing Hand</strong>
+                <div class="panel panel-primary">
+                    <div class="panel-heading text-center">
+                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#chooseCharModal" data-hand="p2area">Choose Character</button>
+                        <strong class="panel-title">Player 2 Area</strong>
+                    </div>
+                    <div class="panel-body" id="p2area">
+                        <div class="panel panel-default">
+                            <div class="panel-heading text-center">
+                                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#drawModal" data-hand="player2Hand">Draw Card</button>
+                                <strong class="panel-title">Player 2 Hand</strong>
+                            </div>
+                            <div class="panel-body" id="player2Hand"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="panel panel-primary">
+                    <div class="panel-heading text-center">
+                        <strong class="panel-title">The Thing Area</strong>
+                    </div>
+                    
+                    <div class="panel-body" id="thingArea">
+                        <div class="panel panel-default">
+                            <div class="panel-heading text-center">
+                                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#drawModal" data-hand="thingHand">Draw Card</button>
+                                <strong class="panel-title">The Thing Hand</strong>
+                                
+                            </div>
+                            
+                            <div class="panel-body" id="thingHand"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <button type="button" class="btn btn-default" id="dealStartingHandsButton">Deal Starting Hands</button><p>
+                
+            <div id="miscAreas">    
+                <div class="panel panel-default">
+                    <div class="panel-heading text-center">
+                        <h3 class="panel-title">The Rec Room</h3>
+                    </div>
+                    
+                    <div class="panel-body" id="recRoom">
+                    </div>
+                </div>
+                
+                <div class="panel panel-default">
+                    <div class="panel-heading text-center">
+                        <h3 class="panel-title">Tasks</h3>
+                    </div>
+                    <div class="panel-body" id="tasks">
+                    </div>
+                </div>
+                
+                <div class="panel panel-default">
+                    <div class="panel-heading text-center">
+                        <h3 class="panel-title">Tool Shed</h3>
+                    </div>
+                    <div class="panel-body" id="toolshed">
+                    </div>
+                </div>
+            </div>
+
+            <div id="modals">
+                <div class="modal fade" id="drawModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            
+                            <div class="modal-body">
+                                <div class="btn-group-vertical center-block" id="deckRadios" data-toggle="buttons"></div>
+                                <br />
+                                <label for="recipient-name" class="control-label">Draw Specific Card (Optional):</label>
+                                <input id="cardIDinput" type="text" class="form-control"  placeholder="Card ID# or Title">
+                            </div>
+                            
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                              <button type="button" class="btn btn-primary" data-dismiss="modal" id="removeCardAcceptButton">Draw Card</button>
+                            </div>
+                            
+                          </div>
+                    </div>
+                </div>
+                
+                <div class="modal fade" id="chooseCharModal" tabindex="-1" role="dialog" aria-labelledby="chooseCharLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            
+                            <div class="modal-header">
+                                <h6>Choose Character</h6> 
+                                (Make sure at least one player has PILOT)
+                            </div>
+                            
+                            <div class="modal-body">
+                                <label for="recipient-name" class="control-label" id="chooseCharacterBody"></label>
+                            </div>
+                            
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            </div>
                             
                         </div>
-                        
-                        <div class="panel-body" id="thingHand"></div>
                     </div>
                 </div>
-            </div>
-            
-            <button type="button" class="btn btn-primary" id="dealStartingHandsButton">
-                Deal Starting Hands
-            </button><p>
                 
-            <div class="panel panel-default">
-                <div class="panel-heading text-center">
-                    <h3 class="panel-title">The Rec Room</h3>
-                </div>
-
-                <div class="panel-body" id="recRoom">
-                </div>
-            </div>
-                
-            <div class="panel panel-default">
-                <div class="panel-heading text-center">
-                    <h3 class="panel-title">Tasks</h3>
-                </div>
-                <div class="panel-body" id="tasks">
-                </div>
-            </div>
-                
-            <div class="panel panel-default">
-                <div class="panel-heading text-center">
-                    <h3 class="panel-title">Tool Shed</h3>
-                </div>
-                <div class="panel-body" id="toolshed">
-                </div>
-            </div>
-            
-            <div class="modal fade" id="drawModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        
-                        <form role="form" id="deckButtons" style="padding:19px 19px"></form>
-                        
-                        <div class="modal-body">
-                            <label for="recipient-name" class="control-label">Remove Specific Card:</label>
-                            <input type="text" class="form-control" id="cardIDinput">
+                <div class="modal fade" id="placeUnderModal" tabindex="-1" role="dialog" aria-labelledby="placeUnderLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            
+                            <div class="modal-header">
+                                <h6> Place Card Under Which Character?</h6> 
+                            </div>
+                            
+                            <div class="modal-body">
+                                <label for="recipient-name" class="control-label" id="chooseCharacterBody"></label>
+                            </div>
+                            
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            </div>
+                            
                         </div>
-                        
-                        <div class="modal-footer">
-                          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                          <button type="button" class="btn btn-primary" data-dismiss="modal" id="removeCardAcceptButton">Remove Card</button>
-                        </div>
-
-                      </div>
-                </div>
-            </div>
-            
-            <div class="modal fade" id="chooseCharModal" tabindex="-1" role="dialog" aria-labelledby="chooseCharLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        
-                        <div class="modal-header">
-                            <h6>Choose Character</h6> 
-                            (Make sure at least one player has PILOT)
-                        </div>
-                        
-                        <div class="modal-body">
-                            <label for="recipient-name" class="control-label" id="chooseCharacterBody"></label>
-                        </div>
-                        
-                        <div class="modal-footer">
-                          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        </div>
-                        
                     </div>
                 </div>
-            </div>
         </div>
         
         <script src="js/main.js"></script>
         <script src="esprima.js"></script>
         <script src="js-yaml.min.js"></script>
         
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
         <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
         <script src="js/plugins.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
