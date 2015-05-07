@@ -9,6 +9,14 @@ var blairSaucer;
 var thousandMilesToCoast;
 var player1Hand, player2Hand, thingHand;
 var allHands;
+var encounterDeck;
+
+//these are pretty magical and definitely should be changed in the future
+var MULTIP_THING_1 = 23;
+var MULTIP_THING_2 = 24;
+var MULTIP_HUMAN_1 = 25;
+var MULTIP_HUMAN_2 = 26;
+var MULTIP_HUMAN_3 = 27;
 
 //URL is a string
 //function loadFileAsString(URL) {
@@ -55,12 +63,14 @@ $(document).ready(function() {
             //console.log("remove card button pressed!");
             var cardID = $("#cardIDinput").val();
             var deckString = $("#deckRadios input:radio:checked").attr('data-cheating');
-            //console.log("getting deck from name: " + deckString);
             var deckObj = getDeckFromName(deckString);
-            //console.log("handTarget: " + handTarget);
             var handObj = getHandFromHTMLid(handTarget);
-            //console.log("deckObj: " + deckObj);
-            handObj.drawSpecificCard(deckObj, cardID);
+            if(cardID === "") {
+                handObj.drawOne(deckObj);
+            }
+            else {
+                handObj.drawSpecificCard(deckObj, cardID);
+            }
         });
     });
     
@@ -107,9 +117,9 @@ $(document).ready(function() {
             var pickedCardHTMLelement = $('#crew' + $(this).html());
             pickedCardHTMLelement.removeClass('btn-success').addClass('btn-warning');
             var crewCardObj  = getCrewCardFromName($(this).html());
-            crewCardObj.misc = crewCardObj.misc + "<br /><small>===" + invokingButton.attr('data-linkedCardName') + "===</small>";
-            var oldContent = pickedCardHTMLelement.attr('data-content');
-            pickedCardHTMLelement.attr('data-content', oldContent + crewCardObj.misc);
+            placeUnderCard(crewCardObj, 
+                           invokingButton.attr('data-linkedCardName'), 
+                           pickedCardHTMLelement);
             invokingButton.parent().remove();
         });
     });
@@ -123,8 +133,60 @@ $(document).ready(function() {
         $(this).prop('disabled', true);
     });
     
+    $('#removeMultiInfectionCardsButton').click(function () {
+        //there are two extra cards for a 4-player game
+        t1.removeCard(MULTIP_THING_1);
+        t1.removeCard(MULTIP_HUMAN_1);
+        console.log("excess cards removed!");
+        //now that these are removed, randomly remove one of the remaining cards...
+        //First, generate a random number between 1 and 3
+        var d3 = Math.floor((Math.random() * 3) + 1);
+        switch(d3) {
+            case 1:
+                t1.removeCard(MULTIP_THING_2);
+                console.log("thing card randomly selected and removed");
+                break;
+            case 2:
+                t1.removeCard(MULTIP_HUMAN_2);
+                console.log("human card  #2 randomly selected and removed");
+                break;
+            case 3:
+                t1.removeCard(MULTIP_HUMAN_3);
+                console.log("human card  #3 randomly selected and removed");
+                break;
+        }
+        $(this).prop('disabled', true);
+    });
+    
+    $('#drawEncounterCardButton').click(function () {
+        drawEncounterCard();
+    });
+    
     loadFileAsJSONmodel("/DeckSim/decks.json");
 });
+
+function placeUnderCard( cardObj, underCardName , HTMLelementToUpdate) {
+    console.log("placing under card...");
+    console.log("cardObj: " + cardObj);
+    console.log("underCardName: " + underCardName);
+    console.log("HTMLelementToUpdate: " + HTMLelementToUpdate);
+    var placeUnderText = "<br /><small>===" + underCardName + "===</small>";
+    var oldContent = HTMLelementToUpdate.attr('data-content');
+    console.log("adding text to button, oldContent = " + oldContent);
+    HTMLelementToUpdate.attr('data-content', oldContent + placeUnderText);
+}
+
+function drawEncounterCard() {
+    $('#encounterDeckArea').empty();
+    var topCard = encounterDeck.pop()
+    $('#encounterDeckArea').append("<b>" + topCard.name + "</b><br /><small>" + topCard.desc + "</small>");
+}
+
+function placeUnderBlairSaucer() {
+    $('#encounterDeckArea').empty();
+    var topEncounterCardIndex = encounterDeck.length() - 1;
+    placeUnderCard(blairSaucer.get(0), encounterDeck[topEncounterCardIndex], $('#blairSaucer').attr('data-content'));
+}
 
 function getCrewCardFromName( crewMemberName ) {
     for(var i=0; i < crewCards.length(); i++) {
@@ -151,40 +213,45 @@ function getHandFromHTMLid( searchHTMLid ) {
     }
 }
 
+function initializeStandardDecks(json) {
+    o1 = new StandardDeckModel("Outpost 31-Deck #1", "OutpostDeck1", json.OutpostDeck1.BaseCards);
+    o1.standardInit();
+    o2 = new StandardDeckModel("Outpost 31-Deck #2", "OutpostDeck2", json.OutpostDeck2.BaseCards);
+    o2.standardInit();
+    o3 = new StandardDeckModel("Outpost 31-Deck #3", "OutpostDeck3", json.OutpostDeck3.BaseCards);
+    o3.standardInit();
+    t1 = new StandardDeckModel("The Thing-Deck #1", "ThingDeck1", json.ThingDeck1.BaseCards);
+    t1.standardInit();
+    t2 = new StandardDeckModel("The Thing-Deck #2", "ThingDeck2", json.ThingDeck2.BaseCards);
+    t2.standardInit();
+    t3 = new StandardDeckModel("The Thing-Deck #3", "ThingDeck3", json.ThingDeck3.BaseCards);
+    t3.standardInit();
+    destruction = new StandardDeckModel("Destruction Deck", "destruction", json.Destruction.BaseCards);
+    destruction.standardInit();
+    
+    allDecks = [o1,o2,o3,t1,t2,t3, destruction];
+}
+
+function initializeHands() {
+    player1Hand = new HandModel("Player 1 Hand", "player1Hand" );
+    player2Hand = new HandModel("Player 2 Hand", "player2Hand" );
+    thingHand = new HandModel("The Thing Hand", "thingHand" );
+    
+    allHands = [player1Hand, player2Hand, thingHand];
+}
+
 function loadFileAsJSONmodel(URL) {
     $.getJSON(URL) 
         .done(function( json ) {
-            o1 = new StandardDeckModel("Outpost 31-Deck #1", "OutpostDeck1", json.OutpostDeck1.BaseCards);
-            o1.standardInit();
-            o2 = new StandardDeckModel("Outpost 31-Deck #2", "OutpostDeck2", json.OutpostDeck2.BaseCards);
-            o2.standardInit();
-            o3 = new StandardDeckModel("Outpost 31-Deck #3", "OutpostDeck3", json.OutpostDeck3.BaseCards);
-            o3.standardInit();
-            t1 = new StandardDeckModel("The Thing-Deck #1", "ThingDeck1", json.ThingDeck1.BaseCards);
-            t1.standardInit();
-            t2 = new StandardDeckModel("The Thing-Deck #2", "ThingDeck2", json.ThingDeck2.BaseCards);
-            t2.standardInit();
-            t3 = new StandardDeckModel("The Thing-Deck #3", "ThingDeck3", json.ThingDeck3.BaseCards);
-            t3.standardInit();
-            destruction = new StandardDeckModel("Destruction Deck", "destruction", json.Destruction.BaseCards);
-            destruction.standardInit();
+            initializeStandardDecks(json);
             
-            allDecks = [o1,o2,o3,t1,t2,t3, destruction];
-            
-            player1Hand = new HandModel("Player 1 Hand", "player1Hand" );
-            console.log("player1Hand: " + player1Hand.HTMLid);
-            player2Hand = new HandModel("Player 2 Hand", "player2Hand" );
-            console.log("player2Hand: " + player2Hand.HTMLid);
-            thingHand = new HandModel("The Thing Hand", "thingHand" );
-            console.log("thingHand: " + thingHand.HTMLid);
-            
-            allHands = [player1Hand, player2Hand, thingHand];
+            initializeHands();
             
             crewCards = new DeckModel("Crew Cards", "crew-cards", json.CrewCards);
             crewCards.init();
             updateRecRoom();
             
-            console.log("crewCards.length: " + crewCards.length());
+            //console.log("crewCards.length: " + crewCards.length());
             for(var i=0; i < crewCards.length(); i++) {
                 $("#chooseCardBody").append("<button \n\
                                               style='margin:7px 15px 17px 0;' \n\
@@ -205,11 +272,15 @@ function loadFileAsJSONmodel(URL) {
             
             blairSaucer = new DeckModel("Blair Saucer", "blairSaucer", json.BlairSaucer);
             blairSaucer.init();
-            $("#thingArea").append("<button style='margin:7px 15px 17px 0;' type='button' class='btn btn-danger' data-toggle='popover' data-trigger='hover' data-placement='top' data-content='"+blairSaucer.get(0).desc+"'>"+blairSaucer.get(0).name+"</button>");
+            $("#thingArea").append("<button style='margin:7px 15px 17px 0;' id='blairSaucer' type='button' class='btn btn-danger' data-toggle='popover' data-trigger='hover' data-placement='top' data-content='"+blairSaucer.get(0).desc+"'>"+blairSaucer.get(0).name+"</button>");
             
             thousandMilesToCoast = new DeckModel("Thousand Miles To Coast", "thousandMilesToCoast", json.ThousandMilesToCoast);
             thousandMilesToCoast.init();
             $("#thingArea").append("<button style='margin:7px 15px 17px 0;' type='button' class='btn btn-danger' data-toggle='popover' data-trigger='hover' data-placement='top' data-content='"+thousandMilesToCoast.get(0).desc+"'>"+thousandMilesToCoast.get(0).name+"</button>");
+            
+            encounterDeck = new DeckModel("Encounter Deck", "encounterDeck", buildEncounterDeck(json.EncounterDeck.Act1, json.EncounterDeck.Act2, json.EncounterDeck.Act3));
+            encounterDeck.nonShuffleInit();
+            drawEncounterCard();
             
             $('[data-toggle="popover"]').popover({html:true});
         })
@@ -217,6 +288,24 @@ function loadFileAsJSONmodel(URL) {
             var err = textStatus + ", " + error;
             console.log( "Request Failed: " + err );
         });
+}
+
+function buildEncounterDeck( act1, act2, act3 ) {
+    var totalDeck = [];
+    
+    shuffle(act3);
+//    console.log("act3: " + act3);
+    totalDeck = totalDeck.concat(act3);
+    
+    shuffle(act2);
+    totalDeck = totalDeck.concat(act2);
+    
+    totalDeck = totalDeck.concat(act1.reverse());
+//    for(var i = 0; i < act1.length; i++) {
+//        console.log("pos " + i + ": " + act1[i].name);
+//    }
+    
+    return totalDeck;
 }
 
 function dealStartingHands() {
@@ -243,17 +332,29 @@ function updateRecRoom() {
     $('[data-toggle="popover"]').popover({html:true});
 }
 
+//shuffles an array of cards through side effects
+function shuffle(listOfCards) {
+    for(var i = 0; i<listOfCards.length; i++) {
+        var newPos = Math.floor(Math.random() * listOfCards.length);
+        var temp = listOfCards[i];
+        listOfCards[i] = listOfCards[newPos];
+        listOfCards[newPos] = temp;
+    }
+}
+
 function DeckModel( inName, HTMLelementID, cardList ) {
     this.name = inName;
     this.HTMLid = HTMLelementID;
     this.stack;
+    this.discardPile = [];
     
+    //data is a list of cards(parsed JSON cards)
     this.tieToCardList = function( data ) {
         var outputStack = new Array();
         
         for(var i = 0; i < data.length; i++) {
             var currListing = data[i];
-            outputStack.push(new CardModel(i+1, currListing.name, currListing.desc));
+            outputStack.push(new CardModel(i+1, currListing.name, currListing.desc, this));
         }
         
         //console.log("OPS: " + outputStack);
@@ -268,17 +369,17 @@ function DeckModel( inName, HTMLelementID, cardList ) {
         return string;
     };
     
-    this.shuffle = function() {
-        //Generates a random int between 0 and size-1
-        for(var i = 0; i<this.stack.length; i++) {
-            var newPos = Math.floor(Math.random() * (this.stack.length));
-            var temp = this.stack[i];
-            this.stack[i] = this.stack[newPos];
-            this.stack[newPos] = temp;
+    this.getDiscardPileString = function() {
+        var string = "Discard: ";
+        for(var i = 0; i < this.discardPile.length; i++) {
+            string = string + "|"; //this.stack[i].id
         }
+        return string;
     };
     
-
+    this.shuffle = function() {
+        shuffle(this.stack);
+    };
     
     this.pop = function() {
         this.updateDisplay();
@@ -301,11 +402,15 @@ function DeckModel( inName, HTMLelementID, cardList ) {
         this.shuffle();
     };
     
-    this.updateDisplay = function() {
-        console.log("parent function");
+    this.nonShuffleInit = function() {
+        this.stack = this.tieToCardList(cardList);
     };
     
+    this.updateDisplay = function() {
+        //console.log("parent function");
+    };
     
+    //cardSearchTerm is either the id# of a card, a name of a card, or the card itself
     this.removeCard = function( cardSearchTerm ) {
         //console.log("search term: " + cardSearchTerm);
         var removedCard = '';
@@ -313,7 +418,8 @@ function DeckModel( inName, HTMLelementID, cardList ) {
         for(var i = 0; i < this.stack.length && found === false ; i++) {
             //console.log("searching against " + this.stack[i].id + " and " + this.stack[i].name);
             if(this.stack[i].id == cardSearchTerm || 
-               this.stack[i].name === cardSearchTerm ) {
+               this.stack[i].name === cardSearchTerm ||
+               this.stack[i] === cardSearchTerm) {
                 removedCard = this.stack[i];
                 found = true;
                 this.stack.splice(i,1);
@@ -328,6 +434,14 @@ function DeckModel( inName, HTMLelementID, cardList ) {
             alert("card not found");
         }
     };
+    
+    this.shuffleDiscardIntoDeck = function() {
+        console.log("now we're doin it");
+        shuffle(this.discardPile);
+        this.stack = this.stack.concat(this.discardPile);
+        this.discardPile = [];
+        this.updateDisplay();
+    };
 }
 
 StandardDeckModel.prototype = new DeckModel();
@@ -336,6 +450,7 @@ function StandardDeckModel(inName, HTMLelementID, cardList){
     
     this.updateDisplay = function() {
         document.getElementById(this.HTMLid).innerHTML = this.toString();
+        document.getElementById(this.HTMLid+"discard").innerHTML = this.getDiscardPileString();
     };
     
     this.updateShuffle = function() {
@@ -343,18 +458,57 @@ function StandardDeckModel(inName, HTMLelementID, cardList){
         this.updateDisplay();
     };
     
+    
     this.standardInit = function() {
+        this.createDeckAreaWithData(this.createShuffleButtonListener);
+    };
+    
+    //callback should always refer to createShuffleButtonListener
+    this.createDeckAreaWithData = function( callback ) {
         this.stack = this.tieToCardList(cardList);
         
         $('#decks').append(" \
-        <div class= 'panel panel-default'> \
-            <div class='panel-body'> \ \
-                <span id = '" + HTMLelementID + "'>"+ this.toString() +"</span> \
-            </div> \
-        </div> \
-        ");
+                <div class='row'> \
+                    <div class='col-xs-5'> \
+                        <div class='panel panel-default deck-panel'> \
+                            <div class='panel-body'> \ \
+                                <span id='" + HTMLelementID + "'>"+ this.toString() +"</span> \
+                            </div> \
+                        </div> \
+                    </div> \
+                    \
+                    <div class='col-xs-2'> \
+                        <button type='button' style='margin:7px 7px 7px 10px;' class='btn btn-default shuffle-btn'>Shuffle Discard Into Draw Deck</button> \
+                    </div> \
+                    \
+                    <div class='col-xs-5'> \
+                        <div class='panel panel-default discard-panel'> \
+                            <div class='panel-body'> \ \
+                                <span id='" + HTMLelementID + "discard'>"+ this.getDiscardPileString() +"</span> \
+                            </div> \
+                        </div> \
+                    </div> \
+                </div> \
+                ");
+        
+        var rowDOM = $('#decks .row:last');
+        //console.log('did I find the row?' +  rowDOM.html());
+        rowDOM.data('deckObj', this);
+        
+        console.log("testing data entry: " + rowDOM.data('deckObj'));
         
         this.updateShuffle();
+        callback();
+    };
+    
+    this.createShuffleButtonListener = function() {
+        $('.shuffle-btn').unbind('click').click(function() {
+            var deckDisplayDOM = $(this).parent().parent();
+            console.log("searching on " + deckDisplayDOM.html());
+            var deckObj = deckDisplayDOM.data('deckObj');
+            console.log("deckObj found! " + deckObj);
+            deckObj.shuffleDiscardIntoDeck();
+        });
     };
 }
 
@@ -367,16 +521,38 @@ function HandModel( PlayerName, HTMLelementID ) {
     this.drawOne = function( deck ) {
         var card = deck.pop();
         contents.push(card);
-        this.appendCardText(card);
+        this.appendCardText(card, this.createDiscardButtonListener);
     };
     
-    this.appendCardText = function( card ) {
-        $('#' + this.HTMLid).append("<span>"+card.getPlaceUnderButtonHTML() + card.toString() + "</span>");
+    //callback should always refer to createDiscardButtonListener
+    this.appendCardText = function( card, callback ) {
+        $('#' + this.HTMLid).append("<span>"+card.getDiscardButtonHTML() + card.getPlaceUnderButtonHTML() + card.toString() + "</span>");
+        
+        //this selector should refer to the span object we just created in the previous line
+        var cardSpan = $('#' + this.HTMLid + ' span:last');
+        //console.log('cardSpan: ' + cardSpan.html() + " tied to " + card.name);
+        cardSpan.data("cardObject", card);
+        
+        callback();
+    };
+    
+    this.createDiscardButtonListener = function() {
+        $('.discard-btn').unbind('click').click(function() {
+            //this should refer to the same object as cardSpan, but a new variable
+            //must be added because the listener takes place in a separate 
+            //environment?
+            var cardSpanDOM = $(this).parent();
+            //console.log("cardSpanDOM found: " + cardSpanDOM.html());
+            var cardObject = cardSpanDOM.data('cardObject');
+            //console.log('cardObject is ' + cardObject.name);
+            cardObject.discard();
+            cardSpanDOM.remove();
+        });
     };
     
     this.drawSpecificCard = function( deck , cardNum ) {
         if(cardNum === "") {
-            console.log("empty draw!");
+            //console.log("empty draw!");
             this.drawOne(deck);
             return;
         }
@@ -385,7 +561,7 @@ function HandModel( PlayerName, HTMLelementID ) {
             var drawnCard = deck.removeCard(cardNum);
             contents.push( drawnCard );
             //console.log("appending: " + drawnCard.toString() + " to " + "$(#" + this.HTMLid + ")");
-            this.appendCardText( drawnCard );
+            this.appendCardText( drawnCard, this.createDiscardButtonListener );
         }
     };
     
@@ -411,11 +587,13 @@ function HandModel( PlayerName, HTMLelementID ) {
     };
 }
 
-function CardModel(inID, inName, inDesc ) {
+function CardModel(inID, inName, inDesc, inDeck ) {
     this.id = inID;
     this.name = inName;
     this.desc = inDesc;
     this.misc = '';
+    this.deck = inDeck;
+    //console.log('card ' + this.name + ' created in ' + this.deck.name);
     
     //divID should refer to the id of the div which contains the card text
     this.getPlaceUnderButtonHTML = function( ) {
@@ -424,13 +602,24 @@ function CardModel(inID, inName, inDesc ) {
                  type='button' \n\
                  class='btn btn-default' \n\
                  data-toggle='modal' \n\
-                 data-target='#placeUnderModal'\n\
-                 data-linkedCardName='"+this.name+"'>Place Under Card</button>";
+                 data-target='#placeUnderModal'>Place Under Card</button>";
+    };
+    
+    this.getDiscardButtonHTML = function() {
+        return "<button \n\
+                 style='margin:3px 3px 3px 0;' \n\
+                 type='button' \n\
+                 class='btn btn-default discard-btn'>Discard</button>";
+    };
+    
+    this.discard = function() {
+        //console.log('removing card ' + this.name + '...');
+        //console.log('pushing onto ' + this.deck.name + ' discard pile...');
+        this.deck.discardPile.push(this);
+        this.deck.updateDisplay();
     };
     
     this.toString = function() {
         return "<strong>" + this.name + "</strong><i><small>"+this.desc+ "(" + this.id + ")</small></i><p>";
     };
 }
-
-

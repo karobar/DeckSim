@@ -24,6 +24,7 @@
         
         <!-- Add your site or application content here -->        
         <div class="container-fluid">
+            <!-- Columns are always 50% wide, on mobile and desktop -->
             <div id="decks"></div>
             
             <div id="hands">
@@ -42,7 +43,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="panel panel-primary">
                     <div class="panel-heading text-center">
                         <button type="button" class="btn btn-default" data-toggle="modal" data-target="#chooseCharModal" data-hand="p2area">Choose Character</button>
@@ -58,38 +59,51 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="panel panel-primary">
                     <div class="panel-heading text-center">
                         <strong class="panel-title">The Thing Area</strong>
                     </div>
-                    
+
                     <div class="panel-body" id="thingArea">
                         <div class="panel panel-default">
                             <div class="panel-heading text-center">
                                 <button type="button" class="btn btn-default" data-toggle="modal" data-target="#drawModal" data-hand="thingHand">Draw Card</button>
                                 <strong class="panel-title">The Thing Hand</strong>
-                                
+
                             </div>
-                            
+
                             <div class="panel-body" id="thingHand"></div>
                         </div>
                     </div>
                 </div>
             </div>
             
-            <button type="button" class="btn btn-default" id="dealStartingHandsButton">Deal Starting Hands</button><p>
-                
+            <button type="button" class="btn btn-default" id="removeMultiInfectionCardsButton">Remove Multiplayer Infection Cards</button>
+            <button type="button" class="btn btn-default" id="dealStartingHandsButton">Deal Starting Hands</button>
+            <p>
+            
             <div id="miscAreas">    
+                <div class="panel panel-success">
+                    <div class="panel-heading text-center">
+                        <button type="button" class="btn btn-default" id="drawEncounterCardButton">Draw Next Card</button>
+                        <strong class="panel-title">Encounter Deck Area</strong>
+                        <button type="button" class="btn btn-default" id="placeUnderBlairSaucer">Place Under Blair-Saucer</button>
+                    </div>
+
+                    <div class="panel-body" id="encounterDeckArea">
+                    </div>
+                </div>
+                
                 <div class="panel panel-default">
                     <div class="panel-heading text-center">
                         <h3 class="panel-title">The Rec Room</h3>
                     </div>
-                    
+
                     <div class="panel-body" id="recRoom">
                     </div>
                 </div>
-                
+
                 <div class="panel panel-default">
                     <div class="panel-heading text-center">
                         <h3 class="panel-title">Tasks</h3>
@@ -97,7 +111,7 @@
                     <div class="panel-body" id="tasks">
                     </div>
                 </div>
-                
+
                 <div class="panel panel-default">
                     <div class="panel-heading text-center">
                         <h3 class="panel-title">Tool Shed</h3>
@@ -111,63 +125,64 @@
                 <div class="modal fade" id="drawModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
-                            
+
                             <div class="modal-body">
                                 <div class="btn-group-vertical center-block" id="deckRadios" data-toggle="buttons"></div>
                                 <br />
                                 <label for="recipient-name" class="control-label">Draw Specific Card (Optional):</label>
                                 <input id="cardIDinput" type="text" class="form-control"  placeholder="Card ID# or Title">
                             </div>
-                            
+
                             <div class="modal-footer">
                               <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                               <button type="button" class="btn btn-primary" data-dismiss="modal" id="removeCardAcceptButton">Draw Card</button>
                             </div>
-                            
+
                           </div>
                     </div>
                 </div>
-                
+
                 <div class="modal fade" id="chooseCharModal" tabindex="-1" role="dialog" aria-labelledby="chooseCharLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
-                            
+
                             <div class="modal-header">
                                 <h6>Choose Character</h6> 
                                 (Make sure at least one player has PILOT)
                             </div>
-                            
+
                             <div class="modal-body">
                                 <label for="recipient-name" class="control-label" id="chooseCharacterBody"></label>
                             </div>
-                            
+
                             <div class="modal-footer">
                               <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                             </div>
-                            
+
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="modal fade" id="placeUnderModal" tabindex="-1" role="dialog" aria-labelledby="placeUnderLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
-                            
+
                             <div class="modal-header">
                                 <h6> Place Card Under Which Card?</h6> 
                             </div>
-                            
+
                             <div class="modal-body">
                                 <label for="recipient-name" class="control-label" id="chooseCardBody"></label>
                             </div>
-                            
+
                             <div class="modal-footer">
                               <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                             </div>
-                            
+
                         </div>
                     </div>
                 </div>
+            </div>
         </div>
         
         <script src="js/main.js"></script>
