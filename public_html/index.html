@@ -15,7 +15,7 @@
         <link rel="stylesheet" href="css/main.css">
         <link rel="stylesheet" href="css/bootstrap.min.css">
         <link rel="stylesheet" href="css/bootstrap-theme.min.css">
-        <script src="js/vendor/modernizr-2.6.2.min.js"></script>
+
     </head>
     <body>
         <!--[if lt IE 7]>
@@ -79,9 +79,11 @@
                 </div>
             </div>
             
+            <span style="margin:12px 12px 12px 12px;" class='center-block text-center'>
             <button type="button" class="btn btn-default" id="removeMultiInfectionCardsButton">Remove Multiplayer Infection Cards</button>
             <button type="button" class="btn btn-default" id="dealStartingHandsButton">Deal Starting Hands</button>
-            <p>
+            <button type="button" class="btn btn-default" id="removeTokenButton">Remove Token</button>
+            </span>
             
             <div id="miscAreas">    
                 <div class="panel panel-success">
@@ -187,14 +189,13 @@
         
         <script src="js/main.js"></script>
         <script src="esprima.js"></script>
-        <script src="js-yaml.min.js"></script>
         
         <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
-        <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
+        <!--<script>window.jQuery || document.write('<script src="js/vendor/jquery-1.9.1.min.js"><\/script>')</script>!-->
         <script src="js/plugins.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
         <script src="js/main.js"></script>
-        
+        <script src="js/vendor/modernizr-2.6.2.min.js"></script>
         <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
         <script>
             var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];

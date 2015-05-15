@@ -90,7 +90,7 @@ $(document).ready(function() {
         var theModal = $(this);
         var invokingButton = $(e.relatedTarget);
         var handTarget = '#' + invokingButton.attr('data-hand');
-        $('#chooseCharacterBody .btn').unbind('click').bind('click', function () {
+        $('#chooseCharacterBody .btn-success').unbind('click').bind('click', function () {
             theModal.modal('hide');
             var removedCard = crewCards.removeCard($(this).html());
             $(handTarget).append("<button \n\
@@ -107,20 +107,26 @@ $(document).ready(function() {
             updateRecRoom();
             invokingButton.prop('disabled', true);
         });
+        
+
     });
     
     $('#placeUnderModal').on('show.bs.modal', function (e) {
         var theModal = $(this);
         var invokingButton = $(e.relatedTarget);
+        var invokingCardText = invokingButton.siblings().filter('.cardTextContainer').children().filter('.cardText').html();
         $('#chooseCardBody .btn').unbind('click').bind('click', function () {
             theModal.modal('hide');
             var pickedCardHTMLelement = $('#crew' + $(this).html());
             pickedCardHTMLelement.removeClass('btn-success').addClass('btn-warning');
-            var crewCardObj  = getCrewCardFromName($(this).html());
-            placeUnderCard(crewCardObj, 
-                           invokingButton.attr('data-linkedCardName'), 
-                           pickedCardHTMLelement);
+            //var crewCardObj  = getCrewCardFromName($(this).html());
+            placeTextUnderCard(invokingCardText, pickedCardHTMLelement);
             invokingButton.parent().remove();
+        });
+        
+        $('#placeUnderBlairFromModal').unbind('click').bind('click', function () {
+            theModal.modal('hide');
+            placeTextUnderCard(invokingCardText,$('#blairSaucer'));
         });
     });
     
@@ -162,30 +168,31 @@ $(document).ready(function() {
         drawEncounterCard();
     });
     
+    $('#placeUnderBlairSaucer').unbind('click').click(function () {
+        console.log("currEncounter" + $('#currEncounter').html());
+        placeTextUnderCard($('#currEncounter').html(),$('#blairSaucer'));
+        $('#encounterDeckArea').empty();
+    });
+    
     loadFileAsJSONmodel("/DeckSim/decks.json");
 });
 
-function placeUnderCard( cardObj, underCardName , HTMLelementToUpdate) {
-    console.log("placing under card...");
-    console.log("cardObj: " + cardObj);
-    console.log("underCardName: " + underCardName);
-    console.log("HTMLelementToUpdate: " + HTMLelementToUpdate);
-    var placeUnderText = "<br /><small>===" + underCardName + "===</small>";
-    var oldContent = HTMLelementToUpdate.attr('data-content');
+function placeTextUnderCard( text, DOMelementToUpdate ) {
+    //console.log("placing under card...");
+    //console.log("underCardName: " + underCardName);
+    //console.log("HTMLelementToUpdate: " + HTMLelementToUpdate);
+    var placeUnderText = "<br /><small>===" + text + "===</small>";
+    var oldContent = DOMelementToUpdate.attr('data-content');
     console.log("adding text to button, oldContent = " + oldContent);
-    HTMLelementToUpdate.attr('data-content', oldContent + placeUnderText);
-}
+    DOMelementToUpdate.attr('data-content', oldContent + placeUnderText);
+};
 
 function drawEncounterCard() {
     $('#encounterDeckArea').empty();
-    var topCard = encounterDeck.pop()
-    $('#encounterDeckArea').append("<b>" + topCard.name + "</b><br /><small>" + topCard.desc + "</small>");
-}
-
-function placeUnderBlairSaucer() {
-    $('#encounterDeckArea').empty();
-    var topEncounterCardIndex = encounterDeck.length() - 1;
-    placeUnderCard(blairSaucer.get(0), encounterDeck[topEncounterCardIndex], $('#blairSaucer').attr('data-content'));
+    var topCard = encounterDeck.pop();
+    $('#encounterDeckArea').append("<b id='currEncounter'>" + topCard.name + "</b>\n\
+                                    <br />\n\
+                                    <small>" + topCard.desc + "</small>");
 }
 
 function getCrewCardFromName( crewMemberName ) {
@@ -240,49 +247,114 @@ function initializeHands() {
     allHands = [player1Hand, player2Hand, thingHand];
 }
 
+function initializeCrewCards(json) {
+    crewCards = new DeckModel("Crew Cards", "crew-cards", json.CrewCards);
+    crewCards.init();
+    updateRecRoom();
+    for(var i=0; i < crewCards.length(); i++) {
+        $("#chooseCardBody").append("<button \n\
+                                      style='margin:7px 15px 17px 0;' \n\
+                                      type='button'\n\
+                                      class='btn btn-success' \n\
+                                      data-toggle='popover' \n\
+                                      data-trigger='hover' \n\
+                                      data-placement='top' \n\
+                                      data-content='"+crewCards.get(i).desc+"'>"+
+                                      crewCards.get(i).name+"</button>");
+    }
+    
+}
+
+function initializeTasks(json) {
+    tasks = new DeckModel("Tasks", "tasks", json.TaskCards.BaseCards);
+    tasks.init();
+    for(var i=0; i < tasks.length(); i++) {
+        $("#tasks").append("<button style='margin:7px 15px 17px 0;' \n\
+                                    type='button' class='btn btn-info' \n\
+                                    data-toggle='popover' \n\
+                                    data-trigger='hover' \n\
+                                    data-placement='top'\n\
+                                    data-content='"+tasks.get(i).desc+"<b class=\"tokenArea\">hold</b>'>"+tasks.get(i).name+"</button>");
+    }
+    
+    $('#tasks .btn').unbind('click').bind('click', function () {
+        var oldContent = $(this).attr('data-content');
+        console.log("oldContent: " + oldContent);
+        var jQueriedNodes = $($.parseHTML(oldContent));
+        
+        var tokenAreaTest = jQueriedNodes.filter('.tokenArea');
+        console.log("tokenAreaTest:" + tokenAreaTest[0].innerHTML);
+        $('.tokenArea', jQueriedNodes).append('*');
+        console.log('didIFind: ' + jQueriedNodes);
+//        var html = jQueriedString.filter('.tokenArea');
+//        html[0].innerHTML = html[0].innerHTML + '*';
+
+//        oldcontent;
+//        var newConetent
+        //$(this).attr('data-content', "token test");
+        //console.log("oldContent:" + html[0].innerHTML);
+    });
+}
+
+function initializeBlairSaucer(json) {
+    blairSaucer = new DeckModel("Blair Saucer", "blairSaucer", json.BlairSaucer);
+    blairSaucer.init();
+    $("#thingArea").append("<button style='margin:7px 15px 17px 0;' \n\
+                                    id='blairSaucer' \n\
+                                    type='button' \n\
+                                    class='btn btn-danger' \n\
+                                    data-toggle='popover'\n\
+                                    data-trigger='hover' \n\
+                                    data-placement='top' \n\
+                                    data-content='"+blairSaucer.get(0).desc+"'>"+
+                                    blairSaucer.get(0).name+"</button>");
+    $("#chooseCardBody").append("<button \n\
+                                  id='placeUnderBlairFromModal' \n\
+                                  style='margin:7px 15px 17px 0;' \n\
+                                  type='button'\n\
+                                  class='btn btn-danger' \n\
+                                  data-toggle='popover' \n\
+                                  data-trigger='hover' \n\
+                                  data-placement='top' \n\
+                                  data-content='"+blairSaucer.get(0).desc+"'>"+
+                                  blairSaucer.get(0).name+"</button>");
+}
+
+function initializeThousandMiles(json) {
+    thousandMilesToCoast = new DeckModel("Thousand Miles To Coast", "thousandMilesToCoast", json.ThousandMilesToCoast);
+    thousandMilesToCoast.init();
+    $("#thingArea").append("<button style='margin:7px 15px 17px 0;' \n\
+                                    type='button' \n\
+                                    class='btn btn-danger' \n\
+                                    data-toggle='popover' \n\
+                                    data-trigger='hover' \n\
+                                    data-placement='top' \n\
+                                    data-content='"+thousandMilesToCoast.get(0).desc+"'>"+thousandMilesToCoast.get(0).name+"</button>");
+}
+
+function initializeEncounterDeck(json) {
+    encounterDeck = new DeckModel("Encounter Deck", "encounterDeck", buildEncounterDeck(json.EncounterDeck.Act1, json.EncounterDeck.Act2, json.EncounterDeck.Act3));
+    encounterDeck.nonShuffleInit();
+    drawEncounterCard();
+}
+
+function createCounterListener() {
+    
+}
+
 function loadFileAsJSONmodel(URL) {
     $.getJSON(URL) 
         .done(function( json ) {
             initializeStandardDecks(json);
-            
             initializeHands();
-            
-            crewCards = new DeckModel("Crew Cards", "crew-cards", json.CrewCards);
-            crewCards.init();
-            updateRecRoom();
-            
-            //console.log("crewCards.length: " + crewCards.length());
-            for(var i=0; i < crewCards.length(); i++) {
-                $("#chooseCardBody").append("<button \n\
-                                              style='margin:7px 15px 17px 0;' \n\
-                                              type='button'\n\
-                                              class='btn btn-success' \n\
-                                              data-toggle='popover' \n\
-                                              data-trigger='hover' \n\
-                                              data-placement='top' \n\
-                                              data-content='"+crewCards.get(i).desc+"'>"+
-                                              crewCards.get(i).name+"</button>");
-            }
-            
-            tasks = new DeckModel("Tasks", "tasks", json.TaskCards.BaseCards);
-            tasks.init();
-            for(var i=0; i < tasks.length(); i++) {
-                $("#tasks").append("<button style='margin:7px 15px 17px 0;' type='button' class='btn btn-info' data-toggle='popover' data-trigger='hover' data-placement='top' data-content='"+tasks.get(i).desc+"'>"+tasks.get(i).name+"</button>");
-            }
-            
-            blairSaucer = new DeckModel("Blair Saucer", "blairSaucer", json.BlairSaucer);
-            blairSaucer.init();
-            $("#thingArea").append("<button style='margin:7px 15px 17px 0;' id='blairSaucer' type='button' class='btn btn-danger' data-toggle='popover' data-trigger='hover' data-placement='top' data-content='"+blairSaucer.get(0).desc+"'>"+blairSaucer.get(0).name+"</button>");
-            
-            thousandMilesToCoast = new DeckModel("Thousand Miles To Coast", "thousandMilesToCoast", json.ThousandMilesToCoast);
-            thousandMilesToCoast.init();
-            $("#thingArea").append("<button style='margin:7px 15px 17px 0;' type='button' class='btn btn-danger' data-toggle='popover' data-trigger='hover' data-placement='top' data-content='"+thousandMilesToCoast.get(0).desc+"'>"+thousandMilesToCoast.get(0).name+"</button>");
-            
-            encounterDeck = new DeckModel("Encounter Deck", "encounterDeck", buildEncounterDeck(json.EncounterDeck.Act1, json.EncounterDeck.Act2, json.EncounterDeck.Act3));
-            encounterDeck.nonShuffleInit();
-            drawEncounterCard();
+            initializeCrewCards(json);
+            initializeTasks(json);
+            initializeBlairSaucer(json);
+            initializeThousandMiles(json);
+            initializeEncounterDeck(json);
             
             $('[data-toggle="popover"]').popover({html:true});
+            createCounterListener();
         })
         .fail(function( jqxhr, textStatus, error ) {
             var err = textStatus + ", " + error;
@@ -329,6 +401,9 @@ function updateRecRoom() {
                     crewCards.get(i).name+
             "</button>");
     }
+    
+
+    
     $('[data-toggle="popover"]').popover({html:true});
 }
 
@@ -478,7 +553,10 @@ function StandardDeckModel(inName, HTMLelementID, cardList){
                     </div> \
                     \
                     <div class='col-xs-2'> \
-                        <button type='button' style='margin:7px 7px 7px 10px;' class='btn btn-default shuffle-btn'>Shuffle Discard Into Draw Deck</button> \
+                        <button type='button' \n\
+                                      style='margin:7px 7px 7px 10px;' \n\
+                                      class='btn btn-default shuffle-btn'>\n\
+                                      Shuffle Discard Into Draw Deck</button> \
                     </div> \
                     \
                     <div class='col-xs-5'> \
@@ -495,7 +573,7 @@ function StandardDeckModel(inName, HTMLelementID, cardList){
         //console.log('did I find the row?' +  rowDOM.html());
         rowDOM.data('deckObj', this);
         
-        console.log("testing data entry: " + rowDOM.data('deckObj'));
+        //console.log("testing data entry: " + rowDOM.data('deckObj'));
         
         this.updateShuffle();
         callback();
@@ -527,7 +605,6 @@ function HandModel( PlayerName, HTMLelementID ) {
     //callback should always refer to createDiscardButtonListener
     this.appendCardText = function( card, callback ) {
         $('#' + this.HTMLid).append("<span>"+card.getDiscardButtonHTML() + card.getPlaceUnderButtonHTML() + card.toString() + "</span>");
-        
         //this selector should refer to the span object we just created in the previous line
         var cardSpan = $('#' + this.HTMLid + ' span:last');
         //console.log('cardSpan: ' + cardSpan.html() + " tied to " + card.name);
@@ -620,6 +697,8 @@ function CardModel(inID, inName, inDesc, inDeck ) {
     };
     
     this.toString = function() {
-        return "<strong>" + this.name + "</strong><i><small>"+this.desc+ "(" + this.id + ")</small></i><p>";
+        return "<div class='cardTextContainer'><strong class='cardText'>" + this.name + "</strong><i><small>"+this.desc+ "(" + this.id + ")</small></i><p><div>";
     };
+    
+
 }
