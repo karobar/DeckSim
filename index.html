@@ -2,7 +2,7 @@
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<html ng-app="DeckSim" class="no-js">
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -15,7 +15,7 @@
         <link rel="stylesheet" href="css/main.css">
         <link rel="stylesheet" href="css/bootstrap.min.css">
         <link rel="stylesheet" href="css/bootstrap-theme.min.css">
-
+        <script src="js/vendor/modernizr-2.6.2.min.js"></script>
     </head>
     <body>
         <!--[if lt IE 7]>
@@ -25,93 +25,63 @@
         <!-- Add your site or application content here -->        
         <div class="container-fluid">
             <!-- Columns are always 50% wide, on mobile and desktop -->
-            <div id="decks" ng-controller="StandardDeckAreaCtrl">
-                {{"standardDecks.length: " + standardDecks.length}}
-                <div class='row' ng-repeat="deck in standardDecks">
-                    <div class='col-xs-5'> 
-                        <div class='panel panel-default deck-panel'> 
-                            <div class='panel-body'> 
-                                <span>{{deck.test}}</span> 
-                            </div> 
-                        </div> 
-                    </div> 
-                    
-                    <div class='col-xs-2'> 
-                        <button type='button' 
-                                style='margin:7px 7px 7px 10px;' 
-                                class='btn btn-default shuffle-btn'>
-                            Shuffle Discard Into Draw Deck
-                        </button> 
-                    </div> 
-                    
-                    <div class='col-xs-5'> 
-                        <div class='panel panel-default discard-panel'> 
-                            <div class='panel-body'> 
-                                <span>{{"placeholder"}}</span> 
-                            </div> 
-                        </div> 
-                    </div> 
-                </div> 
-            </div>
+            <div id="decks"></div>
             
-            <div id="hands" ng-controller="HandController as handCTRL">
-                <div class="panel panel-primary" ng-repeat="hand in handCTRL.hands track by $index">
-                    
+            <div id="hands">
+                <div class="panel panel-primary">
                     <div class="panel-heading text-center">
-                        <button ng-show="hand.isPC"
-                                type="button" 
-                                class="btn btn-default" 
-                                data-toggle="modal" 
-                                data-target="#chooseCharModal">
-                            Choose Character
-                        </button>
-                        <strong class="panel-title">{{hand.name}} Area</strong>
+                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#chooseCharModal" data-hand="p1area">Choose Character</button>
+                        <strong class="panel-title">Player 1 Area</strong>
                     </div>
-                    
-                    <div class="panel-body">
+                    <div class="panel-body" id="p1area">
                         <div class="panel panel-default">
-                            
                             <div class="panel-heading text text-center">
-                                <button type="button" 
-                                        class="btn btn-default" 
-                                        data-toggle="modal" 
-                                        data-target="#drawModal">
-                                    Draw Card
-                                </button>
-                                <strong class="panel-title">{{hand.name}} Hand</strong>
+                                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#drawModal" data-hand="player1Hand">Draw Card</button>
+                                <strong class="panel-title">Player 1 Hand</strong>
                             </div>
-                            
-                            <div class="panel-body" ng-repeat="card in hand.cards">
-                                <span>
-                                    <button style='margin:3px 3px 3px 0;'
-                                            type='button'
-                                            class='btn btn-default discard-btn'>
-                                        Discard
-                                    </button> 
-                                    <button style='margin:3px 3px 3px 0;' 
-                                            type='button' 
-                                            class='btn btn-default'
-                                            data-toggle='modal'
-                                            data-target='#placeUnderModal'>
-                                        Place Under Card
-                                    </button>
-                                    <div class='cardTextContainer'>
-                                        <strong class='cardText'>{{card.name}}</strong>
-                                        <i><small>{{card.desc}}({{card.id}})</small></i><p>
-                                    </div>
-                                </span>
-                            </div>
+                            <div class="panel-body" id="player1Hand"></div>
                         </div>
                     </div>
-                    
+                </div>
+
+                <div class="panel panel-primary">
+                    <div class="panel-heading text-center">
+                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#chooseCharModal" data-hand="p2area">Choose Character</button>
+                        <strong class="panel-title">Player 2 Area</strong>
+                    </div>
+                    <div class="panel-body" id="p2area">
+                        <div class="panel panel-default">
+                            <div class="panel-heading text-center">
+                                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#drawModal" data-hand="player2Hand">Draw Card</button>
+                                <strong class="panel-title">Player 2 Hand</strong>
+                            </div>
+                            <div class="panel-body" id="player2Hand"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel panel-primary">
+                    <div class="panel-heading text-center">
+                        <strong class="panel-title">The Thing Area</strong>
+                    </div>
+
+                    <div class="panel-body" id="thingArea">
+                        <div class="panel panel-default">
+                            <div class="panel-heading text-center">
+                                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#drawModal" data-hand="thingHand">Draw Card</button>
+                                <strong class="panel-title">The Thing Hand</strong>
+
+                            </div>
+
+                            <div class="panel-body" id="thingHand"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
             
-            <span style="margin:12px 12px 12px 12px;" class='center-block text-center'>
-                <button type="button" class="btn btn-default" id="removeMultiInfectionCardsButton">Remove Multiplayer Infection Cards</button>
-                <button type="button" class="btn btn-default" id="dealStartingHandsButton">Deal Starting Hands</button>
-                <button type="button" class="btn btn-default" id="removeTokenButton">Remove Token</button>
-            </span>
+            <button type="button" class="btn btn-default" id="removeMultiInfectionCardsButton">Remove Multiplayer Infection Cards</button>
+            <button type="button" class="btn btn-default" id="dealStartingHandsButton">Deal Starting Hands</button>
+            <p>
             
             <div id="miscAreas">    
                 <div class="panel panel-success">
@@ -215,13 +185,16 @@
             </div>
         </div>
         
+        <script src="js/main.js"></script>
         <script src="esprima.js"></script>
+        <script src="js-yaml.min.js"></script>
+        
         <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
+        <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
         <script src="js/plugins.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
         <script src="js/main.js"></script>
-        <script src="js/vendor/modernizr-2.6.2.min.js"></script>
+        
         <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
         <script>
             var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
