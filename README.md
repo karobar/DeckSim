@@ -1,4 +1,4 @@
 # DeckSim
-A simulator for "The Thing" Card Game by Mark Chaplin
+A simulator for multi-deck and multi-tableau card games.
+An example implementation of "The Thing" Card Game by Mark Chaplin is provided.
 
-Still under rapid development.
