@@ -478,7 +478,7 @@ function StandardDeckModel(inName, HTMLelementID, cardList){
                     </div> \
                     \
                     <div class='col-xs-2'> \
-                        <button type='button' style='margin:7px 7px 7px 10px;' class='btn btn-default shuffle-btn'>Shuffle Discard Into Draw Deck</button> \
+                        <button type='button' style='margin:7px 7px 7px 10px;' class='btn btn-default shuffle-btn'>Re-Shuffle</button> \
                     </div> \
                     \
                     <div class='col-xs-5'> \
